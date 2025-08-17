@@ -8,3 +8,5 @@ chromadb
 groq
 python-dotenv
 python-dateutil
+pysqlite3-binary
+
