@@ -2,6 +2,8 @@
 # RAG + KG + role selection driven generator for 8-month conversations (hypertension scenario)
 
 import os, re, random
+import pysqlite3 as sqlite3
+
 import datetime as dt
 import numpy as np
 import pandas as pd
