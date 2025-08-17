@@ -7,6 +7,8 @@ import chromadb
 from groq import Groq
 import streamlit as st
 from chromadb.config import Settings
+import pysqlite3 as sqlite3
+
 
 # ---------- CONFIG ----------
 CONV_PATH = "conversations_raw.txt"
