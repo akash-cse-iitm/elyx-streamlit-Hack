@@ -4,7 +4,7 @@ from dateutil import parser as dtparse
 from sentence_transformers import SentenceTransformer
 import chromadb
 from groq import Groq
-
+from chromadb.config import Settings
 import streamlit as st
 groq_key = st.secrets["GROQ_API_KEY"]
 
@@ -86,7 +86,11 @@ def extract_decision_candidates(msg_df):
 
 # ---------- RAG ----------
 def build_rag_index(msg_df, wear_df, bio_df):
-    client = chromadb.PersistentClient(path=CHROMA_DIR)
+    # client = chromadb.PersistentClient(path=CHROMA_DIR)
+    client = chromadb.Client(Settings(
+    chroma_db_impl="duckdb+parquet",
+    persist_directory=".chroma_rag"   # same folder you were using
+))
     try: client.delete_collection("elyx_rag")
     except: pass
     col = client.create_collection("elyx_rag")
