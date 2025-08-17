@@ -6,6 +6,7 @@ from sentence_transformers import SentenceTransformer
 import chromadb
 from groq import Groq
 import streamlit as st
+from chromadb.config import Settings
 
 # ---------- CONFIG ----------
 CONV_PATH = "conversations_raw.txt"
@@ -87,7 +88,12 @@ def extract_decision_candidates(msg_df):
 
 # ---------- RAG ----------
 def build_rag_index(msg_df, wear_df, bio_df):
-    client = chromadb.PersistentClient(path=CHROMA_DIR)
+ 
+    # client = chromadb.PersistentClient(path=CHROMA_DIR)
+    client = chromadb.Client(Settings(
+    chroma_db_impl="duckdb+parquet",
+    persist_directory=".chroma_rag"   # same folder you were using
+))
     try: 
         client.delete_collection("elyx_rag")
     except: 
