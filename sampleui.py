@@ -2,7 +2,6 @@
 import streamlit as st
 import math
 from datetime import datetime
-import graphviz
 from build_rag_and_decisions import (
     run_pipeline,
     run_text_query_dynamic,
