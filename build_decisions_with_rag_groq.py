@@ -5,9 +5,7 @@ from dateutil import parser as dtparse
 from sentence_transformers import SentenceTransformer
 import chromadb
 from groq import Groq
-from dotenv import load_dotenv
-
-load_dotenv()
+import streamlit as st
 
 # ---------- CONFIG ----------
 CONV_PATH = "conversations_raw.txt"
@@ -17,7 +15,7 @@ OUTPUT_DECISIONS = "decision_post_rag.jsonl"
 
 EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 CHROMA_DIR = ".chroma_rag"
-
+groq_key = st.secrets["GROQ_API_KEY"]
 # Regex patterns
 TS_PAT = re.compile(r"^\s*\d+\.\s*\[?(\d{1,2}/\d{1,2}/\d{2,4})\s*,\s*([0-9]{1,2}:[0-9]{2}\s*(?:AM|PM|am|pm)?)\]?\s*(.+?):\s*(.*)$")
 TRIGGERS = [
@@ -133,7 +131,7 @@ def rag_retrieve(col, embedder, query, top_k=5):
 
 # ---------- GROQ ----------
 def generate_with_groq(prompt):
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+    client = Groq(api_key=groq_key = st.secrets["GROQ_API_KEY"])
     resp = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[{"role":"user", "content": prompt}],

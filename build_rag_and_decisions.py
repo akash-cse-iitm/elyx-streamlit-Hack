@@ -4,9 +4,10 @@ from dateutil import parser as dtparse
 from sentence_transformers import SentenceTransformer
 import chromadb
 from groq import Groq
-from dotenv import load_dotenv
 
-load_dotenv()
+import streamlit as st
+groq_key = st.secrets["GROQ_API_KEY"]
+
 # ---------- CONFIG ----------
 CONV_PATH = "conversations_raw.txt"
 WEARABLE_PATH = "wearable_seed.csv"           # daily granularity
@@ -121,7 +122,7 @@ def rag_retrieve(col, embedder, query, top_k=5):
 
 # ---------- GROQ ----------
 def generate_with_groq(prompt):
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+    client = Groq(api_key=grok_key)
     resp = client.chat.completions.create(
         model="llama-3.1-8b-instant",   # free fast model
         messages=[{"role":"user", "content": prompt}],
@@ -204,7 +205,7 @@ def run_text_query_dynamic(text, date="2025-08-16", sender="Rohan", role="member
 
     # 2. If no regex match, use Groq to dynamically infer trigger
     if not decision_type:
-        client= Groq(api_key=os.getenv("GROQ_API_KEY"))
+        client= Groq(api_key=groq_key)
         prompt = f"""
         Extract the most likely event type from the text below.
         Possible types: diet_change, diagnostic_order, supplement_start, exercise_update

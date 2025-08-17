@@ -9,10 +9,9 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 import networkx as nx
 from groq import Groq
-from dotenv import load_dotenv
+import streamlit as st
+groq_key = st.secrets["GROQ_API_KEY"]
 
-load_dotenv()
-GROQ_KEY = os.getenv("GROQ_API_KEY") or os.environ.get("GROQ_API_KEY")
 if not GROQ_KEY:
     raise RuntimeError("Set GROQ_API_KEY in env before running.")
 
