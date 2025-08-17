@@ -1,15 +1,12 @@
 import os, re, json
 import pandas as pd
 from dateutil import parser as dtparse
-import pysqlite3 as sqlite3
-
 from sentence_transformers import SentenceTransformer
 import chromadb
 from groq import Groq
-from chromadb.config import Settings
-import streamlit as st
-groq_key = st.secrets["GROQ_API_KEY"]
+from dotenv import load_dotenv
 
+load_dotenv()
 # ---------- CONFIG ----------
 CONV_PATH = "conversations_raw.txt"
 WEARABLE_PATH = "wearable_seed.csv"           # daily granularity
@@ -88,11 +85,7 @@ def extract_decision_candidates(msg_df):
 
 # ---------- RAG ----------
 def build_rag_index(msg_df, wear_df, bio_df):
-    # client = chromadb.PersistentClient(path=CHROMA_DIR)
-    client = chromadb.Client(Settings(
-    chroma_db_impl="duckdb+parquet",
-    persist_directory=".chroma_rag"   # same folder you were using
-))
+    client = chromadb.PersistentClient(path=CHROMA_DIR)
     try: client.delete_collection("elyx_rag")
     except: pass
     col = client.create_collection("elyx_rag")
@@ -128,7 +121,7 @@ def rag_retrieve(col, embedder, query, top_k=5):
 
 # ---------- GROQ ----------
 def generate_with_groq(prompt):
-    client = Groq(api_key=grok_key)
+    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     resp = client.chat.completions.create(
         model="llama-3.1-8b-instant",   # free fast model
         messages=[{"role":"user", "content": prompt}],
@@ -211,7 +204,7 @@ def run_text_query_dynamic(text, date="2025-08-16", sender="Rohan", role="member
 
     # 2. If no regex match, use Groq to dynamically infer trigger
     if not decision_type:
-        client= Groq(api_key=groq_key)
+        client= Groq(api_key=os.getenv("GROQ_API_KEY"))
         prompt = f"""
         Extract the most likely event type from the text below.
         Possible types: diet_change, diagnostic_order, supplement_start, exercise_update
