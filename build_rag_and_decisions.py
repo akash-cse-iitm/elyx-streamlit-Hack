@@ -1,6 +1,8 @@
 import os, re, json
 import pandas as pd
 from dateutil import parser as dtparse
+import pysqlite3 as sqlite3
+
 from sentence_transformers import SentenceTransformer
 import chromadb
 from groq import Groq
