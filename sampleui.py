@@ -5,7 +5,8 @@ from datetime import datetime
 from build_rag_and_decisions import (
     run_pipeline,
     run_text_query_dynamic,
-    get_decision_timeline_enhanced
+    get_decision_timeline_enhanced,
+load_decisions
 )
 
 # ---- Streamlit Page Config ----
@@ -117,7 +118,7 @@ with tab3:
     st.subheader("🚀 Pipeline Explorer")
     if st.button("Run Pipeline Now"):
         with st.spinner("Running pipeline..."):
-            out = run_pipeline()
+            out = load_decisions()
         st.success("Pipeline complete.")
         st.json(out)
 
