@@ -118,6 +118,15 @@ def rag_retrieve(col, embedder, query, top_k=5):
     q_emb = embedder.encode([query], normalize_embeddings=True)
     res = col.query(query_embeddings=q_emb, n_results=top_k)
     return list(zip(res["ids"][0], res["documents"][0]))
+OUTPUT_DECISIONS = "decision_post_rag.jsonl"
+
+def load_decisions():
+    decisions = []
+    if os.path.exists(OUTPUT_DECISIONS):
+        with open(OUTPUT_DECISIONS, "r", encoding="utf-8") as f:
+            for line in f:
+                decisions.append(json.loads(line))
+    return decisions
 
 # ---------- GROQ ----------
 def generate_with_groq(prompt):
